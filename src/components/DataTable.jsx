@@ -133,9 +133,8 @@ const DataTable = ({ pageSize: externalPageSize }) => {
   );
 
   const handleCopyOrder = (rowData) => {
-    // 여기에 각 데이터를 가지고 오더 복사에 대한 로직을 구현합니다.
+    //복사로직
     console.log('Copy order for:', rowData);
-    // 추가로 필요한 로직을 여기에 작성하세요.
   };
 
   const {

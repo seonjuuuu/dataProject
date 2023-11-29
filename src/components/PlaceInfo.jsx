@@ -90,8 +90,9 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
     if (isClickSubmit) {
       handleNameError();
       handleDateError();
+      handleWorkplaceError();
     }
-  }, [name, startDate]);
+  }, [name, startDate, workplace]);
 
   const handleNameError = () => {
     if (!name) {
@@ -109,9 +110,17 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
   };
 
   const handleDateError = () => {
-    console.log('dd', !startDate);
     if (!startDate) {
       setDateError('값을 입력해 주세요');
+    } else {
+      setDateError('');
+    }
+  };
+  const handleWorkplaceError = () => {
+    if (!workplace) {
+      setPlaceError('값을 입력해 주세요');
+    } else {
+      setPlaceError('');
     }
   };
 
@@ -119,17 +128,18 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
     setIsClickSubmit(true);
     handleNameError();
     handleDateError();
+    handleWorkplaceError();
 
-    if (!workplace) {
-      setPlaceError('값을 입력해 주세요');
-    }
-
-    const isValid = true; // 예시로 true를 반환했다고 가정
+    let isValid;
 
     if (onValidation) {
+      if (!startDate || !name || !workplace) {
+        isValid = false;
+      } else {
+        isValid = true;
+      }
       onValidation(isValid);
     }
-
     return isValid;
   };
 

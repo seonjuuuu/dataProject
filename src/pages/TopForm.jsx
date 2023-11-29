@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import PlaceInfo from '../components/PlaceInfo';
 import BasicForm from '../components/BasicForm';
 import styled from 'styled-components';
+import axios from 'axios';
+import CustomModal from '../components/CustomModal';
 
 const TopBox = styled.div`
   display: flex;
@@ -38,6 +40,8 @@ const TopForm = () => {
   const basicFormRef = useRef();
   const placeInfoRefs = useRef({});
   const [placeInfoIds, setPlaceInfoIds] = useState([{ id: Date.now() }]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [successData, setSuccessData] = useState('');
 
   const addPlaceInfo = () => {
     const newPlaceInfoIds = [
@@ -55,7 +59,17 @@ const TopForm = () => {
       .every((ref) => ref && ref.validate());
 
     if (isBasicFormValid && isPlaceInfoValid) {
-      console.log('등록버튼 눌림');
+      const fetchData = async () => {
+        try {
+          const { data } = await axios.post('/orders');
+          setSuccessData(JSON.stringify(data));
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      fetchData();
+      setModalIsOpen(true);
     } else {
       console.log('유효성검사실패 ');
     }
@@ -95,6 +109,10 @@ const TopForm = () => {
         )}
       </TopBox>
       <SubmitButton onClick={handleRegistration}>등록</SubmitButton>
+      <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+        <p>등록이 완료 되었습니다</p>
+        <p>{successData}</p>
+      </CustomModal>
     </>
   );
 };

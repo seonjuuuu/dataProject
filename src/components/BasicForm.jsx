@@ -109,8 +109,9 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
       handleDateError();
       handleItemError();
       handleSupplyError();
+      handleWorkplaceError();
     }
-  }, [name, phoneNumber, startDate, endDate, item, supply]);
+  }, [name, phoneNumber, startDate, endDate, item, supply, workplace]);
 
   const handlePhoneNumberChange = (value) => {
     const regex = /^[0-9\b -]{0,13}$/;
@@ -196,10 +197,18 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
     }
   };
 
+  const handleWorkplaceError = () => {
+    if (!workplace) {
+      setPlaceError('값을 입력해 주세요');
+    } else {
+      setPlaceError('');
+    }
+  };
+
   const handleSupplyError = () => {
     if (supply !== 'selectSupply' && !supplyNumber) {
       setSupplyError('값을 입력해 주세요');
-    } else {
+    } else if (supply !== 'selectSupply' && supplyNumber) {
       setSupplyError('');
     }
   };
@@ -211,14 +220,25 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
     handleDateError();
     handleItemError();
     handleSupplyError();
+    handleWorkplaceError();
 
-    if (!workplace) {
-      setPlaceError('값을 입력해 주세요');
-    }
-
-    const isValid = true; // 예시로 true를 반환했다고 가정
+    let isValid;
 
     if (onValidation) {
+      if (
+        !name ||
+        !phoneNumber ||
+        !startDate ||
+        !endDate ||
+        item === 'selectItem' ||
+        !workplace ||
+        (supply !== 'selectSupply' && !supplyNumber)
+      ) {
+        isValid = false;
+      } else {
+        isValid = true;
+      }
+
       onValidation(isValid);
     }
 
