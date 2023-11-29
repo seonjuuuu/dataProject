@@ -7,6 +7,8 @@ import React, {
 import styled, { css } from 'styled-components';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import CustomModal from './CustomModal';
+import Address from './Address';
 
 const InfoBox = styled.div`
   position: relative;
@@ -78,6 +80,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
   const [dateError, setDateError] = useState('');
   const [placeError, setPlaceError] = useState('');
   const [workplace, setWorkplace] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   const handleNameChange = (value) => {
     setName(value);
@@ -172,7 +175,16 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
         <InputBox
           value={workplace}
           onChange={(e) => setWorkplace(e.target.value)}
-        ></InputBox>
+          onClick={() => setModalIsOpen(true)}
+        />
+        <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+          <Address
+            onAddressChange={(fullAddress) => {
+              setWorkplace(fullAddress);
+              setModalIsOpen(false);
+            }}
+          />
+        </CustomModal>
         {placeError && <p className="error">{placeError}</p>}
       </div>
     </InfoBox>
