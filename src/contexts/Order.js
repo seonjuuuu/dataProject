@@ -16,7 +16,12 @@ export const OrderProvider = ({ children }) => {
 
   return (
     <OrderContext.Provider
-      value={{ selectedOrder, setOrder, setDelete, selectRowNum }}
+      value={{
+        selectedOrder,
+        setOrder,
+        setDelete,
+        selectRowNum,
+      }}
     >
       {children}
     </OrderContext.Provider>

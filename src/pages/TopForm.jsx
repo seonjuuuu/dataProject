@@ -71,18 +71,12 @@ const TopForm = () => {
 
       fetchData();
       setModalIsOpen(true);
-    } else {
-      console.log('유효성검사실패 ');
     }
   };
 
-  const handleValidation = (isValid) => {
-    console.log('유효성 검사 결과:', isValid);
-  };
+  const handleValidation = () => {};
 
-  const handlePlaceInfoValidation = (isValid, id) => {
-    console.log(`PlaceInfo ${id} 유효성 검사 결과:`, isValid);
-  };
+  const handlePlaceInfoValidation = () => {};
 
   const handleDeletePlaceInfo = (idToDelete) => {
     const currentData = { ...placeInfoRefs.current };
@@ -104,9 +98,7 @@ const TopForm = () => {
           <PlaceInfo
             key={item.id}
             ref={(ref) => (placeInfoRefs.current[item.id] = ref)}
-            onValidation={(isValid) =>
-              handlePlaceInfoValidation(isValid, item.id)
-            }
+            onValidation={handlePlaceInfoValidation}
             onDelete={() => handleDeletePlaceInfo(item.id)}
             id={index + 1}
           />
