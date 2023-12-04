@@ -82,6 +82,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
   const [placeError, setPlaceError] = useState('');
   const [workplace, setWorkplace] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { selectedOrder, setOrder } = useOrder();
 
   const handleNameChange = (value) => {
     setName(value);
@@ -93,7 +94,16 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
       handleDateError();
       handleWorkplaceError();
     }
+    setOrder('');
   }, [name, startDate, workplace]);
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setName(selectedOrder.loadPlace[0]?.name);
+      setWorkplace(selectedOrder.loadPlace[0].address);
+      setStartDate(new Date(selectedOrder.loadPlace[0]?.date));
+    }
+  }, [selectedOrder]);
 
   const handleNameError = () => {
     if (!name) {
