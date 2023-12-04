@@ -55,8 +55,9 @@ const TopForm = () => {
     const isBasicFormValid =
       basicFormRef.current && basicFormRef.current.validate();
     const isPlaceInfoValid = Object.values(placeInfoRefs.current)
-      .filter((ref) => ref)
-      .every((ref) => ref && ref.validate());
+      .filter((ref) => ref !== null)
+      .map((ref) => ref && ref.validate())
+      .every((isValid) => isValid);
 
     if (isBasicFormValid && isPlaceInfoValid) {
       const fetchData = async () => {
@@ -84,7 +85,13 @@ const TopForm = () => {
   };
 
   const handleDeletePlaceInfo = (idToDelete) => {
-    delete placeInfoRefs.current[idToDelete];
+    const currentData = { ...placeInfoRefs.current };
+    const filteredData = Object.fromEntries(
+      Object.entries(currentData).filter(([key, value]) => value !== null)
+    );
+
+    delete filteredData[idToDelete];
+
     const newPlaceInfoIds = placeInfoIds.filter((id) => id.id !== idToDelete);
     setPlaceInfoIds(newPlaceInfoIds);
   };
@@ -93,14 +100,14 @@ const TopForm = () => {
     <>
       <TopBox>
         <BasicForm ref={basicFormRef} onValidation={handleValidation} />
-        {placeInfoIds.map((id, index) => (
+        {placeInfoIds.map((item, index) => (
           <PlaceInfo
-            key={id.id}
-            ref={(ref) => (placeInfoRefs.current[id.id] = ref)}
+            key={item.id}
+            ref={(ref) => (placeInfoRefs.current[item.id] = ref)}
             onValidation={(isValid) =>
-              handlePlaceInfoValidation(isValid, id.id)
+              handlePlaceInfoValidation(isValid, item.id)
             }
-            onDelete={() => handleDeletePlaceInfo(id.id)}
+            onDelete={() => handleDeletePlaceInfo(item.id)}
             id={index + 1}
           />
         ))}

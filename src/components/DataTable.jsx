@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, usePagination, useRowSelect } from 'react-table';
 import axios from 'axios';
 import styled from 'styled-components';
+import { useOrder } from '../contexts/OrderCopy';
 
 const Table = styled.table`
   box-sizing: border-box;
@@ -34,6 +35,7 @@ const CopyButton = styled.button`
   border: none;
   text-decoration: underline;
   color: #6d7176;
+  cursor: pointer;
 `;
 
 const Pagination = styled.div`
@@ -68,7 +70,7 @@ const Button = styled.button`
 
 const DataTable = ({ pageSize: externalPageSize }) => {
   const [tableData, setTableData] = useState([]);
-  const [selectedRowIds, setSelectedRowIds] = useState({});
+  const { selectedOrder, setOrder } = useOrder();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -123,7 +125,7 @@ const DataTable = ({ pageSize: externalPageSize }) => {
         accessor: 'copy',
         Header: '오더복사',
         Cell: ({ row }) => (
-          <CopyButton onClick={() => handleCopyOrder(row.original)}>
+          <CopyButton onClick={() => handleCopyOrder(row.original, row.id)}>
             오더 복사
           </CopyButton>
         ),
@@ -132,10 +134,27 @@ const DataTable = ({ pageSize: externalPageSize }) => {
     []
   );
 
-  const handleCopyOrder = (rowData) => {
+  const handleCopyOrder = (rowData, index) => {
     //복사로직
+    console.log(index);
+    setOrder(rowData);
     console.log('Copy order for:', rowData);
   };
+
+  const TableCheckBox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
+    const defaultRef = React.useRef();
+    const resolvedRef = ref || defaultRef;
+
+    React.useEffect(() => {
+      resolvedRef.current.indeterminate = indeterminate;
+    }, [resolvedRef, indeterminate]);
+
+    return (
+      <>
+        <input type="checkbox" ref={resolvedRef} {...rest} />
+      </>
+    );
+  });
 
   const {
     getTableProps,
@@ -149,13 +168,18 @@ const DataTable = ({ pageSize: externalPageSize }) => {
     canPreviousPage,
     pageOptions,
     setPageSize,
-    state: { pageIndex },
+    gotoPage,
+    selectedFlatRows,
+    state: { pageIndex, selectedRowIds },
   } = useTable(
     {
       columns,
       data: useMemo(() => tableData, [tableData]),
-      initialState: { pageIndex: 0, pageSize: externalPageSize },
-      selectedRowIds,
+      initialState: {
+        pageIndex: 0,
+        pageSize: externalPageSize,
+        selectedRowIds: {},
+      },
     },
     usePagination,
     useRowSelect,
@@ -163,22 +187,16 @@ const DataTable = ({ pageSize: externalPageSize }) => {
       hooks.visibleColumns.push((columns) => [
         {
           id: 'selection',
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <input
-                type="checkbox"
-                {...getToggleAllRowsSelectedProps()}
-                indeterminate={undefined}
-              />
-            </div>
-          ),
+          Header: ({ getToggleAllPageRowsSelectedProps }) => {
+            return (
+              <div>
+                <TableCheckBox {...getToggleAllPageRowsSelectedProps()} />
+              </div>
+            );
+          },
           Cell: ({ row }) => (
             <div>
-              <input
-                type="checkbox"
-                {...row.getToggleRowSelectedProps()}
-                indeterminate={undefined}
-              />
+              <TableCheckBox {...row.getToggleRowSelectedProps()} />
             </div>
           ),
         },
@@ -186,9 +204,13 @@ const DataTable = ({ pageSize: externalPageSize }) => {
       ]);
     }
   );
+  useEffect(() => {
+    selectedFlatRows.forEach((row) => {
+      row.toggleRowSelected(false);
+    });
+  }, [pageIndex]);
 
   const handlePageChange = (newPageIndex) => {
-    setSelectedRowIds(null);
     if (newPageIndex > pageIndex) {
       nextPage();
     } else if (newPageIndex < pageIndex) {
@@ -223,6 +245,9 @@ const DataTable = ({ pageSize: externalPageSize }) => {
       </Table>
       <Pagination>
         <div className="buttonList">
+          <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+            &lt;&lt;
+          </Button>
           <Button
             onClick={() => handlePageChange(pageIndex - 1)}
             disabled={!canPreviousPage}
@@ -236,11 +261,32 @@ const DataTable = ({ pageSize: externalPageSize }) => {
           >
             &gt;
           </Button>
+          <Button
+            onClick={() => gotoPage(pageOptions.length - 1)}
+            disabled={!canNextPage}
+          >
+            &gt;&gt;
+          </Button>
         </div>
         <div className="text">
           Page {pageIndex + 1} of {pageOptions.length}
         </div>
       </Pagination>
+      <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
+      <pre>
+        <code>
+          {JSON.stringify(
+            {
+              selectedRowIds: selectedRowIds,
+              'selectedFlatRows[].original': selectedFlatRows.map(
+                (d) => d.original
+              ),
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre>
     </>
   );
 };

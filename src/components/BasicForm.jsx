@@ -10,6 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from './CustomModal';
 import Address from './Address';
+import { useOrder } from '../contexts/OrderCopy';
 
 const InfoForm = styled.form`
   width: 600px;
@@ -97,6 +98,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   const [supplyError, setSupplyError] = useState('');
   const [isClickSubmit, setIsClickSubmit] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { selectedOrder, setOrder } = useOrder();
 
   const handleNameChange = (value) => {
     setName(value);
@@ -111,7 +113,18 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
       handleSupplyError();
       handleWorkplaceError();
     }
-  }, [name, phoneNumber, startDate, endDate, item, supply, workplace]);
+    setOrder('');
+  }, [
+    name,
+    phoneNumber,
+    startDate,
+    endDate,
+    item,
+    supply,
+    workplace,
+    directItem,
+    supplyNumber,
+  ]);
 
   const handlePhoneNumberChange = (value) => {
     const regex = /^[0-9\b -]{0,13}$/;
@@ -119,6 +132,32 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
       setPhoneNumber(value);
     }
   };
+
+  useEffect(() => {
+    if (selectedOrder) {
+      setName(selectedOrder?.name);
+      setPhoneNumber(selectedOrder.phoneNumber);
+      setItem(
+        selectedOrder.item === '냉장품'
+          ? 'refrigeratedGoods'
+          : selectedOrder.item === '냉동품'
+          ? 'frozenProducts'
+          : 'directInput'
+      );
+      setWorkplace(selectedOrder.address);
+      setDirectItem(selectedOrder?.itemDetail);
+      setIsDirectInput(!!selectedOrder.itemDetail);
+      setSupply(
+        selectedOrder.supply === '' ? 'selectSupply' : selectedOrder?.supply
+      );
+      setIsDirectSupply(!!selectedOrder?.supplyDetail);
+      setSupplyNumber(
+        selectedOrder.supplyDetail === null ? '' : selectedOrder.supplyDetail
+      );
+      setStartDate(new Date(selectedOrder?.fromDate));
+      setEndDate(new Date(selectedOrder?.toDate));
+    }
+  }, [selectedOrder]);
 
   useEffect(() => {
     const cleanedValue = phoneNumber.replace(/\D/g, '');
@@ -304,7 +343,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
               <option value="directInput">직접입력</option>
             </SelectBox>
             <InputBox
-              disabled={!isDirectInput}
+              disabled={!isDirectInput || !directItem}
               value={directItem}
               onChange={(e) => setDirectItem(e.target.value)}
             />

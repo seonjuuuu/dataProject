@@ -35,6 +35,7 @@ const CloseButton = styled.button`
   position: absolute;
   top: 20px;
   right: 20px;
+  cursor: pointer;
 `;
 
 const CustomModal = ({ isOpen, onClose, children }) => {
