@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import DataTable from '../components/DataTable';
 import styled from 'styled-components';
+import CustomModal from '../components/CustomModal';
+import { useOrder } from '../contexts/Order';
+import axios from 'axios';
+
 const DeleteButton = styled.button`
   display: block;
   color: white;
@@ -28,15 +32,37 @@ const SelectBox = styled.select`
 
 const TableList = () => {
   const [pageSize, setPageSize] = useState(20);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { selectRowNum } = useOrder();
 
   const handlePageSizeChange = (event) => {
     const newPageSize = parseInt(event.target.value, 10);
-    console.log(newPageSize);
     setPageSize(newPageSize);
   };
+
+  const handleDeleteTableRow = () => {
+    if (selectRowNum.length === 0) {
+      return alert('선택된 테이블행이 없습니다.');
+    } else {
+      const deleteData = async () => {
+        try {
+          await axios.delete(`/order`);
+          setModalIsOpen(true);
+        } catch (err) {
+          console.error(err);
+        }
+      };
+      deleteData();
+    }
+  };
+
   return (
     <div>
-      <DeleteButton>삭제</DeleteButton>
+      <DeleteButton onClick={handleDeleteTableRow}>삭제</DeleteButton>
+      <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+        <p>삭제가 완료 되었습니다</p>
+        <p>{JSON.stringify(selectRowNum)}</p>
+      </CustomModal>
       <SelectBox value={pageSize} onChange={handlePageSizeChange}>
         <option value="20">20개보기</option>
         <option value="50">50개보기</option>

@@ -27,7 +27,7 @@ export const handlers = [
     };
     return HttpResponse.json(returnData);
   }),
-  http.delete('/orders/:id', ({ params }) => {
-    console.log(`delete ${params}`);
+  http.delete('/order', () => {
+    return HttpResponse.json();
   }),
 ];

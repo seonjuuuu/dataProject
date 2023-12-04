@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useTable, usePagination, useRowSelect } from 'react-table';
 import axios from 'axios';
 import styled from 'styled-components';
-import { useOrder } from '../contexts/OrderCopy';
+import { useOrder } from '../contexts/Order';
 
 const Table = styled.table`
   box-sizing: border-box;
@@ -70,7 +70,7 @@ const Button = styled.button`
 
 const DataTable = ({ pageSize: externalPageSize }) => {
   const [tableData, setTableData] = useState([]);
-  const { selectedOrder, setOrder } = useOrder();
+  const { setDelete, setOrder } = useOrder();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +125,7 @@ const DataTable = ({ pageSize: externalPageSize }) => {
         accessor: 'copy',
         Header: '오더복사',
         Cell: ({ row }) => (
-          <CopyButton onClick={() => handleCopyOrder(row.original, row.id)}>
+          <CopyButton onClick={() => handleCopyOrder(row.original)}>
             오더 복사
           </CopyButton>
         ),
@@ -134,11 +134,8 @@ const DataTable = ({ pageSize: externalPageSize }) => {
     []
   );
 
-  const handleCopyOrder = (rowData, index) => {
-    //복사로직
-    console.log(index);
+  const handleCopyOrder = (rowData) => {
     setOrder(rowData);
-    console.log('Copy order for:', rowData);
   };
 
   const TableCheckBox = React.forwardRef(({ indeterminate, ...rest }, ref) => {
@@ -218,6 +215,11 @@ const DataTable = ({ pageSize: externalPageSize }) => {
     }
   };
 
+  useEffect(() => {
+    const deleteId = Object.keys(selectedRowIds).map((key) => Number(key) + 1);
+    setDelete(deleteId);
+  }, [selectedRowIds]);
+
   return (
     <>
       <Table {...getTableProps()}>
@@ -272,21 +274,6 @@ const DataTable = ({ pageSize: externalPageSize }) => {
           Page {pageIndex + 1} of {pageOptions.length}
         </div>
       </Pagination>
-      <p>Selected Rows: {Object.keys(selectedRowIds).length}</p>
-      <pre>
-        <code>
-          {JSON.stringify(
-            {
-              selectedRowIds: selectedRowIds,
-              'selectedFlatRows[].original': selectedFlatRows.map(
-                (d) => d.original
-              ),
-            },
-            null,
-            2
-          )}
-        </code>
-      </pre>
     </>
   );
 };

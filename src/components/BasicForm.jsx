@@ -10,7 +10,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CustomModal from './CustomModal';
 import Address from './Address';
-import { useOrder } from '../contexts/OrderCopy';
+import { useOrder } from '../contexts/Order';
 
 const InfoForm = styled.form`
   width: 600px;
