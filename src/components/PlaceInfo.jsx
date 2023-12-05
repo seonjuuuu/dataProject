@@ -88,7 +88,7 @@ const DateRagePicker = styled(DatePicker)`
   padding-left: 10px;
 `;
 
-const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
+const PlaceInfo = forwardRef(({ id, onDelete }, ref) => {
   const [startDate, setStartDate] = useState(null);
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState('');
@@ -97,6 +97,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
   const [placeError, setPlaceError] = useState('');
   const [workplace, setWorkplace] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isValidName, setIsValidName] = useState(true);
   const { selectedOrder, setOrder } = useOrder();
 
   const handleNameChange = (value) => {
@@ -124,17 +125,22 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
   const handleNameError = () => {
     if (!name) {
       setNameError('값을 입력해주세요.');
+      setIsValidName(false);
     } else {
       const nameRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z\s]+$/;
-      const isValidName = nameRegex.test(name);
+      const validName = nameRegex.test(name);
 
-      if (!isValidName) {
+      if (!validName) {
         setNameError('한글, 영어, 공백만 입력 가능합니다');
+        setIsValidName(false);
       } else {
         setNameError('');
+        setIsValidName(true);
       }
     }
   };
+
+  useEffect(() => {}, [isValidName]);
 
   const handleDateError = () => {
     if (!startDate) {
@@ -159,7 +165,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
 
     let isValid;
 
-    if (!startDate || !name || !workplace) {
+    if (!startDate || !name || !workplace || !isValidName) {
       isValid = false;
     } else {
       isValid = true;

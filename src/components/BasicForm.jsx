@@ -113,6 +113,8 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   const [supplyError, setSupplyError] = useState('');
   const [isClickSubmit, setIsClickSubmit] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isValidPhone, setIsValidPhone] = useState(false);
+  const [isValidName, setIsValidName] = useState(true);
   const { selectedOrder, setOrder } = useOrder();
 
   const handleNameChange = (value) => {
@@ -204,14 +206,17 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   const handleNameError = () => {
     if (!name) {
       setNameError('값을 입력해주세요.');
+      setIsValidName(false);
     } else {
       const nameRegex = /^[ㄱ-ㅎ|가-힣|a-z|A-Z\s]+$/;
-      const isValidName = nameRegex.test(name);
+      const validName = nameRegex.test(name);
 
-      if (!isValidName) {
+      if (!validName) {
         setNameError('한글, 영어, 공백만 입력 가능합니다');
+        setIsValidName(false);
       } else {
         setNameError('');
+        setIsValidName(true);
       }
     }
   };
@@ -219,13 +224,16 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   const handlePhoneError = useCallback(() => {
     if (!phoneNumber) {
       setPhoneError('값을 입력해주세요');
+      setIsValidPhone(false);
     } else {
       const phoneNumberRegex = /^\d{3}-\d{4}-\d{4}$/;
       const isValidPhone = phoneNumberRegex.test(phoneNumber);
       if (!isValidPhone) {
         setPhoneError('알맞은 핸드폰 번호 형식을 입력해 주세요');
+        setIsValidPhone(false);
       } else {
         setPhoneError('');
+        setIsValidPhone(true);
       }
     }
   }, [phoneNumber]);
@@ -289,7 +297,10 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
       !endDate ||
       item === 'selectItem' ||
       !workplace ||
-      (supply !== 'selectSupply' && !supplyNumber)
+      (supply !== 'selectSupply' && !supplyNumber) ||
+      (item === 'directInput' && !directItem) ||
+      !isValidPhone ||
+      !isValidName
     ) {
       isValid = false;
     } else {
