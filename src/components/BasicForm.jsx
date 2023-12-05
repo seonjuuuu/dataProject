@@ -16,9 +16,13 @@ const InfoForm = styled.form`
   box-sizing: border-box;
   padding: 12px 0;
   width: 41%;
+
   @media screen and (max-width: 991px) {
     width: 100%;
     padding: 12px;
+  }
+  @media screen and (max-width: 768px) {
+    padding: 0;
   }
 `;
 
@@ -135,6 +139,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
     workplace,
     directItem,
     supplyNumber,
+    isDirectInput,
   ]);
 
   const handlePhoneNumberChange = (value) => {
@@ -258,7 +263,10 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   const handleSupplyError = () => {
     if (supply !== 'selectSupply' && !supplyNumber) {
       setSupplyError('값을 입력해 주세요');
-    } else if (supply !== 'selectSupply' && supplyNumber) {
+    } else if (
+      (supply !== 'selectSupply' && supplyNumber) ||
+      supply === 'selectSupply'
+    ) {
       setSupplyError('');
     }
   };
@@ -350,7 +358,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
               <option value="directInput">직접입력</option>
             </SelectBox>
             <InputBox
-              disabled={!isDirectInput || !directItem}
+              disabled={!isDirectInput}
               value={directItem}
               onChange={(e) => setDirectItem(e.target.value)}
             />

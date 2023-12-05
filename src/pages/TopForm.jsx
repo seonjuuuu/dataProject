@@ -41,6 +41,7 @@ const AddPlaceButton = styled.button`
   @media screen and (max-width: 768px) {
     display: block;
     width: 100%;
+    height: 50px;
     margin: 0;
   }
 `;
@@ -64,13 +65,9 @@ const SubmitButton = styled.button`
   @media screen and (max-width: 991px) {
     margin-left: 24px;
   }
-`;
-
-const ConfirmButton = styled.button`
-  ${BasicButton}
-  position: absolute;
-  bottom: 50px;
-  right: 30px;
+  @media screen and (max-width: 768px) {
+    margin-left: 12px;
+  }
 `;
 
 const TopForm = () => {
