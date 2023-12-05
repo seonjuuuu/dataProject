@@ -99,9 +99,10 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
 
   useEffect(() => {
     if (selectedOrder) {
-      setName(selectedOrder.loadPlace[0]?.name);
-      setWorkplace(selectedOrder.loadPlace[0].address);
-      setStartDate(new Date(selectedOrder.loadPlace[0]?.date));
+      if (!selectedOrder.loadPlace?.[id]) return
+      setName(selectedOrder.loadPlace[id]?.name);
+      setWorkplace(selectedOrder.loadPlace[id].address);
+      setStartDate(new Date(selectedOrder.loadPlace[id]?.date));
     }
   }, [selectedOrder]);
 
@@ -143,13 +144,10 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
 
     let isValid;
 
-    if (onValidation) {
-      if (!startDate || !name || !workplace) {
-        isValid = false;
-      } else {
-        isValid = true;
-      }
-      onValidation(isValid);
+    if (!startDate || !name || !workplace) {
+      isValid = false;
+    } else {
+      isValid = true;
     }
     return isValid;
   };
@@ -160,7 +158,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
 
   return (
     <InfoBox>
-      {id !== 1 && (
+      {id !== 0 && (
         <DeleteButton
           onClick={() => {
             onDelete();

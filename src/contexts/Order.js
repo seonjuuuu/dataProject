@@ -7,6 +7,7 @@ export const OrderProvider = ({ children }) => {
   const [selectRowNum, setSelectRowNum] = useState([]);
 
   const setOrder = (order) => {
+      console.log(11, order)
     setSelectedOrder(order);
   };
 

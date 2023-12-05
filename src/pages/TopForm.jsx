@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PlaceInfo from '../components/PlaceInfo';
 import BasicForm from '../components/BasicForm';
 import styled from 'styled-components';
 import axios from 'axios';
 import CustomModal from '../components/CustomModal';
+import { useOrder } from '../contexts/Order';
 
 const TopBox = styled.div`
   display: flex;
@@ -38,10 +39,29 @@ const SubmitButton = styled.button`
 
 const TopForm = () => {
   const basicFormRef = useRef();
-  const placeInfoRefs = useRef({});
+  const placeInfoRefs = useRef([]);
   const [placeInfoIds, setPlaceInfoIds] = useState([{ id: Date.now() }]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [successData, setSuccessData] = useState('');
+  const { selectedOrder } = useOrder();
+
+  useEffect(() => {
+    placeInfoRefs.current = placeInfoRefs.current.filter((value) =>
+      Boolean(value)
+    );
+  }, [placeInfoIds]);
+
+  useEffect(() => {
+    if (selectedOrder?.loadPlace) {
+      const newPlaceInfoIds = Array.from(
+        { length: selectedOrder?.loadPlace.length },
+        (_, index) => ({
+          id: Date.now() + index,
+        })
+      );
+      setPlaceInfoIds(newPlaceInfoIds);
+    }
+  }, [selectedOrder]);
 
   const addPlaceInfo = () => {
     const newPlaceInfoIds = [
@@ -54,8 +74,7 @@ const TopForm = () => {
   const handleRegistration = () => {
     const isBasicFormValid =
       basicFormRef.current && basicFormRef.current.validate();
-    const isPlaceInfoValid = Object.values(placeInfoRefs.current)
-      .filter((ref) => ref !== null)
+    const isPlaceInfoValid = placeInfoRefs.current
       .map((ref) => ref && ref.validate())
       .every((isValid) => isValid);
 
@@ -74,18 +93,7 @@ const TopForm = () => {
     }
   };
 
-  const handleValidation = () => {};
-
-  const handlePlaceInfoValidation = () => {};
-
   const handleDeletePlaceInfo = (idToDelete) => {
-    const currentData = { ...placeInfoRefs.current };
-    const filteredData = Object.fromEntries(
-      Object.entries(currentData).filter(([key, value]) => value !== null)
-    );
-
-    delete filteredData[idToDelete];
-
     const newPlaceInfoIds = placeInfoIds.filter((id) => id.id !== idToDelete);
     setPlaceInfoIds(newPlaceInfoIds);
   };
@@ -93,14 +101,13 @@ const TopForm = () => {
   return (
     <>
       <TopBox>
-        <BasicForm ref={basicFormRef} onValidation={handleValidation} />
+        <BasicForm ref={basicFormRef} />
         {placeInfoIds.map((item, index) => (
           <PlaceInfo
             key={item.id}
-            ref={(ref) => (placeInfoRefs.current[item.id] = ref)}
-            onValidation={handlePlaceInfoValidation}
+            ref={(ref) => (placeInfoRefs.current[index] = ref)}
             onDelete={() => handleDeletePlaceInfo(item.id)}
-            id={index + 1}
+            id={index}
           />
         ))}
         {placeInfoIds.length < 3 && (

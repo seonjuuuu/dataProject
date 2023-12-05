@@ -263,8 +263,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
 
     let isValid;
 
-    if (onValidation) {
-      if (
+    if (
         !name ||
         !phoneNumber ||
         !startDate ||
@@ -272,13 +271,10 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         item === 'selectItem' ||
         !workplace ||
         (supply !== 'selectSupply' && !supplyNumber)
-      ) {
-        isValid = false;
-      } else {
-        isValid = true;
-      }
-
-      onValidation(isValid);
+    ) {
+      isValid = false;
+    } else {
+      isValid = true;
     }
 
     return isValid;
