@@ -59,7 +59,11 @@ const TableList = () => {
   return (
     <div>
       <DeleteButton onClick={handleDeleteTableRow}>삭제</DeleteButton>
-      <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+      <CustomModal
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+        showConfirmButton={true}
+      >
         <p>삭제가 완료 되었습니다</p>
         <p>{JSON.stringify(selectRowNum)}</p>
       </CustomModal>

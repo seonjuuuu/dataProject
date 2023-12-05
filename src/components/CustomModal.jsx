@@ -28,6 +28,21 @@ const customStyles = {
     position: 'relative',
   },
 };
+const ConfirmButton = styled.button`
+  display: block;
+  color: white;
+  background-color: #2c3e76;
+  border: none;
+  box-shadow: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  overflow: visible;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 50px;
+  right: 30px;
+`;
 
 const CloseButton = styled.button`
   background-color: transparent;
@@ -39,11 +54,14 @@ const CloseButton = styled.button`
   cursor: pointer;
 `;
 
-const CustomModal = ({ isOpen, onClose, children }) => {
+const CustomModal = ({ isOpen, onClose, children, showConfirmButton }) => {
   return (
     <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
       {children}
       <CloseButton onClick={onClose}>X</CloseButton>
+      {showConfirmButton && (
+        <ConfirmButton onClick={onClose}>확인</ConfirmButton>
+      )}
     </Modal>
   );
 };

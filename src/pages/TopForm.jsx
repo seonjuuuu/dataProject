@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PlaceInfo from '../components/PlaceInfo';
 import BasicForm from '../components/BasicForm';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import axios from 'axios';
 import CustomModal from '../components/CustomModal';
 import { useOrder } from '../contexts/Order';
@@ -45,7 +45,7 @@ const AddPlaceButton = styled.button`
   }
 `;
 
-const SubmitButton = styled.button`
+const BasicButton = css`
   display: block;
   color: white;
   background-color: #2c3e76;
@@ -56,10 +56,21 @@ const SubmitButton = styled.button`
   overflow: visible;
   font-size: 16px;
   cursor: pointer;
+`;
+
+const SubmitButton = styled.button`
+  ${BasicButton}
   margin-left: 10px;
   @media screen and (max-width: 991px) {
     margin-left: 24px;
   }
+`;
+
+const ConfirmButton = styled.button`
+  ${BasicButton}
+  position: absolute;
+  bottom: 50px;
+  right: 30px;
 `;
 
 const TopForm = () => {
@@ -142,9 +153,21 @@ const TopForm = () => {
         </PlaceInput>
       </TopBox>
       <SubmitButton onClick={handleRegistration}>등록</SubmitButton>
-      <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>
+      <CustomModal
+        isOpen={modalIsOpen}
+        onClose={() => setModalIsOpen(false)}
+        showConfirmButton={true}
+      >
         <p>등록이 완료 되었습니다</p>
-        <p>{successData}</p>
+        <p
+          style={{
+            width: '100%',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {successData}
+        </p>
       </CustomModal>
     </>
   );
