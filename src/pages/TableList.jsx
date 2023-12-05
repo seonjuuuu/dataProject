@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTable from '../components/DataTable';
 import styled from 'styled-components';
 import CustomModal from '../components/CustomModal';
@@ -32,6 +32,7 @@ const SelectBox = styled.select`
 
 const TableList = () => {
   const [pageSize, setPageSize] = useState(20);
+  const [tableData, setTableData] = useState([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const { selectRowNum } = useOrder();
 
@@ -39,6 +40,20 @@ const TableList = () => {
     const newPageSize = parseInt(event.target.value, 10);
     setPageSize(newPageSize);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data } = await axios.get('/orders');
+        setTableData(data);
+      } catch (err) {
+        console.error(err);
+        alert('데이터를 불러오는데 실패하였습니다');
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleDeleteTableRow = () => {
     if (selectRowNum.length === 0) {
@@ -50,6 +65,7 @@ const TableList = () => {
           setModalIsOpen(true);
         } catch (err) {
           console.error(err);
+          alert('삭제에 실패하였습니다.');
         }
       };
       deleteData();
@@ -72,7 +88,7 @@ const TableList = () => {
         <option value="50">50개보기</option>
         <option value="100">100개보기</option>
       </SelectBox>
-      <DataTable pageSize={pageSize} />
+      <DataTable pageSize={pageSize} dataList={tableData} />
     </div>
   );
 };

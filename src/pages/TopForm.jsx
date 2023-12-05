@@ -118,6 +118,7 @@ const TopForm = () => {
           setSuccessData(JSON.stringify(data));
         } catch (err) {
           console.error(err);
+          alert('등록에 실패하였습니다.');
         }
       };
 

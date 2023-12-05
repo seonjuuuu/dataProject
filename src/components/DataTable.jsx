@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useTable, usePagination, useRowSelect } from 'react-table';
-import axios from 'axios';
 import styled from 'styled-components';
 import { useOrder } from '../contexts/Order';
 
@@ -75,22 +74,8 @@ const Button = styled.button`
   }
 `;
 
-const DataTable = ({ pageSize: externalPageSize }) => {
-  const [tableData, setTableData] = useState([]);
+const DataTable = ({ pageSize: externalPageSize, dataList: tableData }) => {
   const { setDelete, setOrder } = useOrder();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get('/orders');
-        setTableData(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   useEffect(() => {
     setPageSize(externalPageSize);
