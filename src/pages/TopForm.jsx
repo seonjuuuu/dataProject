@@ -111,9 +111,6 @@ const TopForm = () => {
       .map((ref) => ref && ref.validate())
       .every((isValid) => isValid);
 
-    console.log(isBasicFormValid);
-    console.log(isPlaceInfoValid);
-
     if (isBasicFormValid && isPlaceInfoValid) {
       const fetchData = async () => {
         try {
