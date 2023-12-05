@@ -12,8 +12,9 @@ import Address from './Address';
 import { useOrder } from '../contexts/Order';
 
 const InfoBox = styled.div`
+  box-sizing: border-box;
   position: relative;
-  width: 350px;
+  width: 33%;
   border: 1px solid #ced4da;
   border-radius: 4px;
   margin: 12px;
@@ -37,6 +38,12 @@ const InfoBox = styled.div`
     color: red;
     font-size: 14px;
   }
+
+  @media screen and (max-width: 768px) {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+  }
 `;
 
 const sharedStyles = css`
@@ -53,7 +60,15 @@ const InputBox = styled.input`
   ${sharedStyles}
 `;
 
-const InputBoxGroup = styled.div``;
+const InputBoxGroup = styled.div`
+  width: 100%;
+  .form-input {
+    width: 100%;
+  }
+  .react-datepicker-wrapper {
+    width: 100%;
+  }
+`;
 
 const DeleteButton = styled.button`
   color: red;
@@ -68,7 +83,7 @@ const DeleteButton = styled.button`
 
 const DateRagePicker = styled(DatePicker)`
   ${sharedStyles}
-  width: 350px;
+  width: 100%;
   font-size: 16px;
   padding-left: 10px;
 `;
@@ -99,7 +114,7 @@ const PlaceInfo = forwardRef(({ onValidation, id, onDelete }, ref) => {
 
   useEffect(() => {
     if (selectedOrder) {
-      if (!selectedOrder.loadPlace?.[id]) return
+      if (!selectedOrder.loadPlace?.[id]) return;
       setName(selectedOrder.loadPlace[id]?.name);
       setWorkplace(selectedOrder.loadPlace[id].address);
       setStartDate(new Date(selectedOrder.loadPlace[id]?.date));

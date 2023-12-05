@@ -13,20 +13,29 @@ import Address from './Address';
 import { useOrder } from '../contexts/Order';
 
 const InfoForm = styled.form`
-  width: 600px;
-  padding: 12px 12px;
-  label {
-    font-weight: 700;
+  box-sizing: border-box;
+  padding: 12px 0;
+  width: 41%;
+  @media screen and (max-width: 991px) {
+    width: 100%;
+    padding: 12px;
   }
 `;
 
 const FormBox = styled.div`
   display: flex;
-  justify-content: space-between;
+`;
+
+const Label = styled.label`
+  width: 16%;
+  flex: 0 0 auto;
+  font-weight: 700;
 `;
 
 const InputBoxGroup = styled.div`
-  width: 500px;
+  max-width: 100%;
+  width: 100%;
+  flex: 1 0;
   margin: 0 0 1rem 0;
   font-size: 18px;
 
@@ -34,7 +43,10 @@ const InputBoxGroup = styled.div`
     display: flex;
     gap: 10px;
     &.date {
-      gap: 3px;
+      gap: 1px;
+    }
+    .react-datepicker-wrapper {
+      width: 100%;
     }
   }
   .error {
@@ -69,7 +81,6 @@ const InputBox = styled.input.attrs((props) => ({
 
 const DateRagePicker = styled(DatePicker)`
   ${sharedStyles}
-  width: 242px;
   font-size: 16px;
   padding-left: 10px;
 `;
@@ -264,13 +275,13 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
     let isValid;
 
     if (
-        !name ||
-        !phoneNumber ||
-        !startDate ||
-        !endDate ||
-        item === 'selectItem' ||
-        !workplace ||
-        (supply !== 'selectSupply' && !supplyNumber)
+      !name ||
+      !phoneNumber ||
+      !startDate ||
+      !endDate ||
+      item === 'selectItem' ||
+      !workplace ||
+      (supply !== 'selectSupply' && !supplyNumber)
     ) {
       isValid = false;
     } else {
@@ -287,7 +298,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
   return (
     <InfoForm>
       <FormBox>
-        <label>이름</label>
+        <Label>이름</Label>
         <InputBoxGroup>
           <InputBox
             value={name}
@@ -297,7 +308,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         </InputBoxGroup>
       </FormBox>
       <FormBox>
-        <label>휴대폰 번호</label>
+        <Label>휴대폰 번호</Label>
         <InputBoxGroup>
           <InputBox
             value={phoneNumber}
@@ -307,7 +318,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         </InputBoxGroup>
       </FormBox>
       <FormBox>
-        <label>날짜</label>
+        <Label>날짜</Label>
         <InputBoxGroup>
           <div className="form-input date">
             <DateRagePicker
@@ -326,7 +337,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         </InputBoxGroup>
       </FormBox>
       <FormBox>
-        <label>품목</label>
+        <Label>품목</Label>
         <InputBoxGroup>
           <div className="form-input">
             <SelectBox
@@ -348,7 +359,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         </InputBoxGroup>
       </FormBox>
       <FormBox>
-        <label>물량</label>
+        <Label>물량</Label>
         <InputBoxGroup>
           <div className="form-input">
             <SelectBox
@@ -370,7 +381,7 @@ const BasicForm = forwardRef(({ onValidation }, ref) => {
         </InputBoxGroup>
       </FormBox>
       <FormBox>
-        <label>출근지</label>
+        <Label>출근지</Label>
         <InputBoxGroup>
           <InputBox
             value={workplace}

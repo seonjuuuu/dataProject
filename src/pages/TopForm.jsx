@@ -9,18 +9,40 @@ import { useOrder } from '../contexts/Order';
 const TopBox = styled.div`
   display: flex;
   align-items: flex-start;
+  padding: 12px;
+  justify-content: space-between;
+  @media screen and (max-width: 991px) {
+    display: block;
+  }
+`;
+
+const PlaceInput = styled.div`
+  width: 58%;
+  display: flex;
+  @media screen and (max-width: 991px) {
+    width: 100%;
+  }
+  @media screen and (max-width: 768px) {
+    display: block;
+    width: 100%;
+  }
 `;
 
 const AddPlaceButton = styled.button`
   margin: 12px;
   height: 311px;
-  width: 350px;
+  width: 33%;
   border: 1px solid #ced4da;
   color: #2c3e76;
   font-size: 40px;
   background-color: white;
   border-radius: 4px;
   cursor: pointer;
+  @media screen and (max-width: 768px) {
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
 `;
 
 const SubmitButton = styled.button`
@@ -35,6 +57,9 @@ const SubmitButton = styled.button`
   font-size: 16px;
   cursor: pointer;
   margin-left: 10px;
+  @media screen and (max-width: 991px) {
+    margin-left: 24px;
+  }
 `;
 
 const TopForm = () => {
@@ -102,17 +127,19 @@ const TopForm = () => {
     <>
       <TopBox>
         <BasicForm ref={basicFormRef} />
-        {placeInfoIds.map((item, index) => (
-          <PlaceInfo
-            key={item.id}
-            ref={(ref) => (placeInfoRefs.current[index] = ref)}
-            onDelete={() => handleDeletePlaceInfo(item.id)}
-            id={index}
-          />
-        ))}
-        {placeInfoIds.length < 3 && (
-          <AddPlaceButton onClick={addPlaceInfo}>+</AddPlaceButton>
-        )}
+        <PlaceInput>
+          {placeInfoIds.map((item, index) => (
+            <PlaceInfo
+              key={item.id}
+              ref={(ref) => (placeInfoRefs.current[index] = ref)}
+              onDelete={() => handleDeletePlaceInfo(item.id)}
+              id={index}
+            />
+          ))}
+          {placeInfoIds.length < 3 && (
+            <AddPlaceButton onClick={addPlaceInfo}>+</AddPlaceButton>
+          )}
+        </PlaceInput>
       </TopBox>
       <SubmitButton onClick={handleRegistration}>등록</SubmitButton>
       <CustomModal isOpen={modalIsOpen} onClose={() => setModalIsOpen(false)}>

@@ -4,10 +4,13 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { useOrder } from '../contexts/Order';
 
-const Table = styled.table`
+const TableList = styled.div`
   box-sizing: border-box;
-  width: 99%;
-  margin: 10px auto;
+  padding: 12px;
+`;
+
+const Table = styled.table`
+  width: 100%;
   overflow: auto;
   text-align: center;
   border: 1px solid #ced4da;
@@ -222,29 +225,33 @@ const DataTable = ({ pageSize: externalPageSize }) => {
 
   return (
     <>
-      <Table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+      <TableList>
+        <Table {...getTableProps()}>
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th {...column.getHeaderProps()}>
+                    {column.render('Header')}
+                  </th>
                 ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </Table>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </Table>
+      </TableList>
       <Pagination>
         <div className="buttonList">
           <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>

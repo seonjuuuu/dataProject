@@ -1,4 +1,3 @@
-import './App.css';
 import TableList from './pages/TableList';
 import TopForm from './pages/TopForm';
 import { OrderProvider } from './contexts/Order';
