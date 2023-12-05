@@ -7,6 +7,7 @@ import { useOrder } from '../contexts/Order';
 const TableList = styled.div`
   box-sizing: border-box;
   padding: 12px;
+  overflow-x: auto;
 `;
 
 const Table = styled.table`
@@ -30,6 +31,9 @@ const Table = styled.table`
       padding: 4px;
       color: #6d7176;
     }
+  }
+  @media screen and (max-width: 768px) {
+    min-width: 760px;
   }
 `;
 
